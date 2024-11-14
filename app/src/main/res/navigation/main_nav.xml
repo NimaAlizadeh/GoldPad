@@ -44,12 +44,12 @@
         android:label="fragment_personal_requests"
         tools:layout="@layout/fragment_personal_requests" >
         <action
-            android:id="@+id/action_personalRequestsFragment_to_newRequestFragment"
-            app:destination="@id/newRequestFragment" />
+            android:id="@+id/action_personalRequestsFragment_to_notificationsFragment"
+            app:destination="@id/notificationsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/newRequestFragment"
-        android:name="com.example.goldpad.ui.newRequest.NewRequestFragment"
-        android:label="fragment_new_request"
-        tools:layout="@layout/fragment_new_request" />
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.goldpad.ui.notifications.NotificationsFragment"
+        android:label="fragment_notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

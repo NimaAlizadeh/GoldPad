@@ -3,6 +3,7 @@ package com.example.goldpad.di
 import android.content.Context
 import androidx.room.Room
 import com.example.goldpad.database.GoldPadDatabase
+import com.example.goldpad.database.dao.RequestDao
 import com.example.goldpad.database.dao.UserDao
 import com.example.goldpad.utils.UserPreferences
 import dagger.Module
@@ -32,6 +33,11 @@ object DatabaseModule {
     @Provides
     fun provideUserDao(appDatabase: GoldPadDatabase): UserDao {
         return appDatabase.userDao()
+    }
+
+    @Provides
+    fun provideRequestDao(appDatabase: GoldPadDatabase): RequestDao {
+        return appDatabase.RequestDao()
     }
 
     @Provides
