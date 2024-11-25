@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
+import com.example.goldpad.R
 import com.example.goldpad.databinding.FragmentAllSellerRequestsBinding
 import com.example.goldpad.ui.adapters.AllSellerRequestsAdapter
+import com.example.goldpad.utils.Constants
 import com.example.goldpad.viewmodels.AllSellerRequestsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -36,26 +39,28 @@ class AllSellerRequestsFragment : Fragment() {
         observeViewModel()
 
         binding.continueButton.setOnClickListener {
-            viewModel.saveSelectedRequestsToWaiting(userId = 1) // Replace with actual userId
+            val selectedRequests = adapter.getSelectedRequests()
+            if (selectedRequests.isNotEmpty()) {
+                viewModel.saveSelectedRequestsToWaiting(Constants.USER_ID)
+                findNavController().navigate(AllSellerRequestsFragmentDirections.actionAllSellerRequestsFragmentToAllBuyerRequestsFragment())
+            }
         }
-
     }
 
     private fun setupRecyclerView() {
-        adapter = AllSellerRequestsAdapter().apply {
-            onRequestSelected = { requestWithUser ->
-                viewModel.toggleRequestSelection(requestWithUser)
-            }
+        adapter = AllSellerRequestsAdapter()
+        adapter.onRequestSelected = { requestWithUser ->
+            viewModel.toggleRequestSelection(requestWithUser)
         }
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@AllSellerRequestsFragment.adapter
         }
     }
 
-
     private fun observeViewModel() {
-        viewModel.requestsWithUsersLiveData.observe(viewLifecycleOwner) { requestsWithUsers ->
+        viewModel.requestsLiveData.observe(viewLifecycleOwner) { requestsWithUsers ->
             adapter.setRequests(requestsWithUsers)
         }
 
@@ -66,7 +71,6 @@ class AllSellerRequestsFragment : Fragment() {
 
         viewModel.fetchRequests()
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

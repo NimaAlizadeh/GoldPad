@@ -12,10 +12,14 @@ import com.example.goldpad.database.entities.Waiting
 interface WaitingDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWaitingItem(waiting: Waiting)
+    suspend fun insertWaiting(waiting: Waiting)
 
     @Query("SELECT * FROM waiting WHERE userId = :userId")
     suspend fun getWaitingItemsByUserId(userId: Int): List<Waiting>
+
+
+    @Query("SELECT * FROM waiting WHERE id = :waitingId")
+    suspend fun getWaitingById(waitingId: Int): Waiting
 
     @Transaction
     @Query("SELECT * FROM waiting WHERE id = :waitingId")

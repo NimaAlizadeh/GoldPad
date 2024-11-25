@@ -8,7 +8,7 @@ class WaitingRepository @Inject constructor(
     private val waitingDao: WaitingDao
 ) {
     suspend fun insertWaitingItem(waiting: Waiting) {
-        waitingDao.insertWaitingItem(waiting)
+        waitingDao.insertWaiting(waiting)
     }
 
     suspend fun getWaitingItemsByUserId(userId: Int): List<Waiting> {

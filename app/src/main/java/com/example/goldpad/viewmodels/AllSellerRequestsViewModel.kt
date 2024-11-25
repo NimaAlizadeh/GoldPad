@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goldpad.database.dto.RequestWithUser
-import com.example.goldpad.database.entities.Request
 import com.example.goldpad.database.entities.Waiting
 import com.example.goldpad.repositories.PersonalRequestsRepository
 import com.example.goldpad.repositories.WaitingRepository
@@ -20,20 +19,17 @@ class AllSellerRequestsViewModel @Inject constructor(
     private val waitingRepository: WaitingRepository
 ) : ViewModel() {
 
-    val requestsLiveData = MutableLiveData<List<Request>>()
+    val requestsLiveData = MutableLiveData<List<RequestWithUser>>()
     val selectedRequests = MutableLiveData<MutableList<RequestWithUser>>(mutableListOf())
-    val requestsWithUsersLiveData = MutableLiveData<List<RequestWithUser>>()
-
 
     fun fetchRequests() {
         viewModelScope.launch {
             val requestsWithUsers = withContext(Dispatchers.IO) {
                 requestRepository.getAllRequestsWithUsers()
             }
-            requestsWithUsersLiveData.postValue(requestsWithUsers)
+            requestsLiveData.postValue(requestsWithUsers)
         }
     }
-
 
     fun toggleRequestSelection(requestWithUser: RequestWithUser) {
         selectedRequests.value?.let { selectedList ->
@@ -48,11 +44,15 @@ class AllSellerRequestsViewModel @Inject constructor(
 
     fun saveSelectedRequestsToWaiting(userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            selectedRequests.value?.forEach { requestWithUser ->
-                val waiting = Waiting(requestId = requestWithUser.request.id, userId = userId)
-                waitingRepository.insertWaitingItem(waiting)
+            selectedRequests.value?.let { selectedList ->
+                if (selectedList.isNotEmpty()) {
+                    val waiting = Waiting(
+                        userId = userId,
+                        requests = selectedList.map { it.request }
+                    )
+                    waitingRepository.insertWaitingItem(waiting)
+                }
             }
         }
     }
-
 }

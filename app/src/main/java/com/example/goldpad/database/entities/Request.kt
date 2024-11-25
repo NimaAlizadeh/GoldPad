@@ -13,12 +13,6 @@ import androidx.room.PrimaryKey
             childColumns = ["userId"],
             onDelete = ForeignKey.CASCADE
         ),
-        ForeignKey(
-            entity = Waiting::class, // New relationship with Waiting
-            parentColumns = ["id"],
-            childColumns = ["requestId"],
-            onDelete = ForeignKey.CASCADE
-        )
     ]
 )
 data class Request(
