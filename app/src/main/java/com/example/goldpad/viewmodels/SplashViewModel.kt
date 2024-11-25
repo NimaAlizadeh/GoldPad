@@ -19,6 +19,9 @@ class SplashViewModel @Inject constructor(
 
     val navigateToLogin = MutableLiveData<Boolean>()
     val navigateToPersonalRequest = MutableLiveData<Boolean>()
+    val navigateToAdminPage = MutableLiveData<Boolean>()
+
+
 
     fun checkUserToken() {
         viewModelScope.launch {
@@ -29,20 +32,24 @@ class SplashViewModel @Inject constructor(
                 }
                 if (user != null) {
                     user.id?.let {
-                        userRepository.saveUserId(it)
-                        Constants.USER_ID = it
+                        userRepository.saveUserId(it) // Save user ID in repository
+                        Constants.USER_ID = it       // Save user ID in constants
                     }
-                    navigateToPersonalRequest.postValue(true)
+                    if (user.isAdmin) { // Check if the user is an admin
+                        navigateToAdminPage.postValue(true) // Navigate to the admin page
+                    } else {
+                        navigateToPersonalRequest.postValue(true) // Navigate to the personal request page
+                    }
                 } else {
-                    navigateToLogin.postValue(true)
-                    return@launch
+                    navigateToLogin.postValue(true) // Navigate to login if user is null
                 }
             } else {
-                navigateToLogin.postValue(true)
-                return@launch
+                navigateToLogin.postValue(true) // Navigate to login if token is null
             }
         }
     }
+
+
 
     fun checkAndInsertAdminUser() {
         viewModelScope.launch {

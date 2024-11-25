@@ -30,7 +30,7 @@ class RegisterViewModel @Inject constructor(
 
                 Constants.USER_ID = user.id
 
-                _registerState.postValue(RegisterState.Success)
+                _registerState.postValue(RegisterState.Success(isAdmin = user.isAdmin))
 
             } catch (e: Exception) {
                 _registerState.postValue(RegisterState.Error("عملیات ثبت نام با مشکل مواجه شد! دوباره تلاش کنید"))
@@ -38,10 +38,11 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+
 }
 
 sealed class RegisterState {
     object Loading : RegisterState()
-    object Success : RegisterState()
+    data class Success(val isAdmin: Boolean) : RegisterState()
     data class Error(val message: String) : RegisterState()
 }

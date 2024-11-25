@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -32,13 +33,13 @@ class SplashFragment : Fragment() {
 
         binding.progressBar.visibility = View.VISIBLE
 
-        splashViewModel.checkUserToken()
         splashViewModel.checkAndInsertAdminUser()
+        splashViewModel.checkUserToken()
 
-        splashViewModel.navigateToLogin.observe(viewLifecycleOwner, Observer { shouldNavigateToLogin ->
+        splashViewModel.navigateToAdminPage.observe(viewLifecycleOwner, Observer { shouldNavigateToAdmin ->
             binding.progressBar.visibility = View.GONE
-            if (shouldNavigateToLogin) {
-                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToLoginFragment())
+            if (shouldNavigateToAdmin == true) {
+                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToAllSellerRequestsFragment())
             }
         })
 
@@ -49,7 +50,23 @@ class SplashFragment : Fragment() {
             }
         })
 
+        splashViewModel.navigateToLogin.observe(viewLifecycleOwner, Observer { shouldNavigateToLogin ->
+            binding.progressBar.visibility = View.GONE
+            if (shouldNavigateToLogin) {
+                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToLoginFragment())
+            }
+        })
+    }
 
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 
 

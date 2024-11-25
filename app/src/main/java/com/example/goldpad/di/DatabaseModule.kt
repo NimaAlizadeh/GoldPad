@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.goldpad.database.GoldPadDatabase
 import com.example.goldpad.database.dao.RequestDao
 import com.example.goldpad.database.dao.UserDao
+import com.example.goldpad.database.dao.WaitingDao
 import com.example.goldpad.utils.UserPreferences
 import dagger.Module
 import dagger.Provides
@@ -38,6 +39,11 @@ object DatabaseModule {
     @Provides
     fun provideRequestDao(appDatabase: GoldPadDatabase): RequestDao {
         return appDatabase.RequestDao()
+    }
+
+    @Provides
+    fun provideWaitingDao(appDatabase: GoldPadDatabase): WaitingDao {
+        return appDatabase.WaitingDao()
     }
 
     @Provides

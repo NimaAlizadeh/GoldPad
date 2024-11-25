@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -62,8 +63,13 @@ class LoginFragment : Fragment() {
                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 }
                 is LoginState.Success -> {
-                    findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToPersonalRequestsFragment())
+                    if (state.isAdmin) {
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToAllSellerRequestsFragment())
+                    } else {
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToPersonalRequestsFragment())
+                    }
                 }
+
                 else -> {
                     binding.apply {
                         loginButton.isEnabled = true
@@ -78,6 +84,17 @@ class LoginFragment : Fragment() {
         binding.registerText.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 
 

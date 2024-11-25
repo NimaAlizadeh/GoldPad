@@ -62,6 +62,10 @@ class PersonalRequestsFragment : Fragment() {
                 recyclerViewRequests.layoutManager = LinearLayoutManager(context)
                 recyclerViewRequests.adapter = userRequestsAdapter
 
+
+                if(requests.isEmpty())
+                    Toast.makeText(requireContext(), Constants.USER_ID.toString(), Toast.LENGTH_SHORT).show()
+
             }
 
             newRequestButton.setOnClickListener {
@@ -117,7 +121,7 @@ class PersonalRequestsFragment : Fragment() {
 
                 if (request == null) {
                     val newRequest = Request(
-                        fromUser = Constants.USER_ID,
+                        userId = Constants.USER_ID,
                         requestText = "",
                         amount = amount,
                         mode = mode

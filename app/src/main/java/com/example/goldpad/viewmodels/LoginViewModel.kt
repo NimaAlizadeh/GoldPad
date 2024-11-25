@@ -37,16 +37,17 @@ class LoginViewModel @Inject constructor(
 
                 Constants.USER_ID = user.id
 
-                _loginState.postValue(LoginState.Success)
+                _loginState.postValue(LoginState.Success(isAdmin = user.isAdmin))
             } else {
                 _loginState.postValue(LoginState.Error("نام کاربری یا رمز عبور نامعتبر است"))
             }
         }
     }
+
 }
 
 sealed class LoginState {
     object Loading : LoginState()
-    object Success : LoginState()
+    data class Success(val isAdmin: Boolean) : LoginState()
     data class Error(val message: String) : LoginState()
 }

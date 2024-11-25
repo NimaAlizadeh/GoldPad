@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -63,8 +64,13 @@ class RegisterFragment : Fragment() {
                         registerProgress.visibility = View.VISIBLE
                     }
                     is RegisterState.Success -> {
-                        findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToPersonalRequestsFragment())
+                        if (state.isAdmin) {
+                            findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToAllSellerRequestsFragment())
+                        } else {
+                            findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToPersonalRequestsFragment())
+                        }
                     }
+
                     is RegisterState.Error -> {
                         binding.registerButton.isEnabled = true
                         registerButton.visibility = View.VISIBLE
@@ -81,6 +87,17 @@ class RegisterFragment : Fragment() {
 
 
         }
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
     }
 
 

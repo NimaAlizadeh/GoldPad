@@ -1,14 +1,32 @@
 package com.example.goldpad.database.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "request")
-data class Request (
+@Entity(
+    tableName = "request",
+    foreignKeys = [
+        ForeignKey(
+            entity = User::class, // Existing relationship with User
+            parentColumns = ["id"],
+            childColumns = ["userId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = Waiting::class, // New relationship with Waiting
+            parentColumns = ["id"],
+            childColumns = ["requestId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+data class Request(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
-    var fromUser: Int = 0,
+    var userId: Int = 0,    // Existing foreign key to User's ID
+    var requestId: Int = 0, // Foreign key to Waiting's ID
     var requestText: String = "",
     var amount: Int = 0,
-    var mode: Boolean = false,
+    var mode: Boolean = false
 )
