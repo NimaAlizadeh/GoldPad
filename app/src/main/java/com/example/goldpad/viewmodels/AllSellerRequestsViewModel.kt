@@ -24,10 +24,10 @@ class AllSellerRequestsViewModel @Inject constructor(
 
     fun fetchRequests() {
         viewModelScope.launch {
-            val requestsWithUsers = withContext(Dispatchers.IO) {
-                requestRepository.getAllRequestsWithUsers()
+            val sellerRequests = withContext(Dispatchers.IO) {
+                requestRepository.getAllRequestsWithUsers().filter { it.request.mode == false }
             }
-            requestsLiveData.postValue(requestsWithUsers)
+            requestsLiveData.postValue(sellerRequests)
         }
     }
 
@@ -42,17 +42,16 @@ class AllSellerRequestsViewModel @Inject constructor(
         }
     }
 
-    fun saveSelectedRequestsToWaiting(userId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            selectedRequests.value?.let { selectedList ->
-                if (selectedList.isNotEmpty()) {
-                    val waiting = Waiting(
-                        userId = userId,
-                        requests = selectedList.map { it.request }
-                    )
-                    waitingRepository.insertWaitingItem(waiting)
-                }
-            }
+    suspend fun saveSelectedRequestsToWaiting(userId: Int): Int {
+        return withContext(Dispatchers.IO) {
+            val selectedList = selectedRequests.value ?: emptyList()
+            val waiting = Waiting(
+                userId = userId,
+                requests = selectedList.map { it.request }
+            )
+            val generatedId = waitingRepository.insertWaitingItem(waiting).toInt() // Cast Long to Int
+            generatedId
         }
     }
+
 }

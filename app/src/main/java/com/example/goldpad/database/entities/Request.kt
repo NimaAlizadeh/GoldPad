@@ -22,5 +22,6 @@ data class Request(
     var requestId: Int = 0, // Foreign key to Waiting's ID
     var requestText: String = "",
     var amount: Int = 0,
-    var mode: Boolean = false
+    var mode: Boolean = false, // true: buyer, false: seller
+    var proposedValue: Double? = null
 )

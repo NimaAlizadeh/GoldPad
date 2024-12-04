@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
 import com.example.goldpad.R
@@ -14,6 +16,7 @@ import com.example.goldpad.ui.adapters.AllSellerRequestsAdapter
 import com.example.goldpad.utils.Constants
 import com.example.goldpad.viewmodels.AllSellerRequestsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AllSellerRequestsFragment : Fragment() {
@@ -41,8 +44,14 @@ class AllSellerRequestsFragment : Fragment() {
         binding.continueButton.setOnClickListener {
             val selectedRequests = adapter.getSelectedRequests()
             if (selectedRequests.isNotEmpty()) {
-                viewModel.saveSelectedRequestsToWaiting(Constants.USER_ID)
-                findNavController().navigate(AllSellerRequestsFragmentDirections.actionAllSellerRequestsFragmentToAllBuyerRequestsFragment())
+                lifecycleScope.launch {
+                    val waitingId = viewModel.saveSelectedRequestsToWaiting(Constants.USER_ID)
+                    Toast.makeText(requireContext(), waitingId.toString(), Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(
+                        AllSellerRequestsFragmentDirections
+                            .actionAllSellerRequestsFragmentToAllBuyerRequestsFragment(waitingId)
+                    )
+                }
             }
         }
     }
