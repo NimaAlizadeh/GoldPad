@@ -32,4 +32,10 @@ interface RequestDao {
     @Transaction
     @Query("SELECT * FROM request")
     suspend fun getAllRequestsWithUsers(): List<RequestWithUser>
+
+    @Query("SELECT * FROM request WHERE isActive = 1 AND mode = :isBuyer")
+    suspend fun getActiveRequests(isBuyer: Boolean): List<Request>
+
+    @Query("UPDATE request SET isActive = 0 WHERE id IN (:requestIds)")
+    suspend fun deactivateRequests(requestIds: List<Int>)
 }

@@ -3,6 +3,7 @@ package com.example.goldpad.di
 import android.content.Context
 import androidx.room.Room
 import com.example.goldpad.database.GoldPadDatabase
+import com.example.goldpad.database.dao.NotificationDao
 import com.example.goldpad.database.dao.RequestDao
 import com.example.goldpad.database.dao.UserDao
 import com.example.goldpad.database.dao.WaitingDao
@@ -44,6 +45,11 @@ object DatabaseModule {
     @Provides
     fun provideWaitingDao(appDatabase: GoldPadDatabase): WaitingDao {
         return appDatabase.WaitingDao()
+    }
+
+    @Provides
+    fun provideNotificationDao(appDatabase: GoldPadDatabase): NotificationDao {
+        return appDatabase.notificationDao()
     }
 
     @Provides

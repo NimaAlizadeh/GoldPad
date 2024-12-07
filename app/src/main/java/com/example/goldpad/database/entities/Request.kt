@@ -23,5 +23,6 @@ data class Request(
     var requestText: String = "",
     var amount: Int = 0,
     var mode: Boolean = false, // true: buyer, false: seller
-    var proposedValue: Double? = null
+    var proposedValue: Double? = null,
+    var isActive: Boolean = true
 )

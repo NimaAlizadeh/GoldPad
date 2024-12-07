@@ -26,7 +26,8 @@ class AllBuyerRequestsViewModel @Inject constructor(
     fun fetchBuyerRequests() {
         viewModelScope.launch {
             val buyerRequests = withContext(Dispatchers.IO) {
-                requestRepository.getAllRequestsWithUsers().filter { it.request.mode } // Filter for buyers
+                requestRepository.getAllRequestsWithUsers()
+                    .filter { it.request.mode && it.request.isActive }
             }
             requestsLiveData.postValue(buyerRequests)
         }

@@ -25,7 +25,8 @@ class AllSellerRequestsViewModel @Inject constructor(
     fun fetchRequests() {
         viewModelScope.launch {
             val sellerRequests = withContext(Dispatchers.IO) {
-                requestRepository.getAllRequestsWithUsers().filter { it.request.mode == false }
+                requestRepository.getAllRequestsWithUsers()
+                    .filter { !it.request.mode && it.request.isActive }
             }
             requestsLiveData.postValue(sellerRequests)
         }

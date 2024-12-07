@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.goldpad.database.dto.RequestWithUser
 import com.example.goldpad.databinding.FragmentAdminConfirmationBinding
 import com.example.goldpad.ui.adapters.AdminRequestsAdapter
 import com.example.goldpad.viewmodels.AdminConfirmationViewModel
@@ -49,13 +48,14 @@ class AdminConfirmationFragment : Fragment() {
             showConfirmationDialog()
         }
 
-        viewModel.fetchWaitingWithRequests(waitingId)
+        // Fetch waiting record by ID
+        viewModel.fetchWaitingRecord(waitingId)
     }
 
     private fun setupRecyclerView() {
         adapter = AdminRequestsAdapter().apply {
-            onProposedValueChanged = { requestWithUser, value ->
-                viewModel.updateProposedValue(requestWithUser.request, value)
+            onProposedValueChanged = { _, _ ->
+                validateConfirmButtonState()
             }
         }
 
@@ -66,11 +66,14 @@ class AdminConfirmationFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.waitingWithRequestsLiveData.observe(viewLifecycleOwner) { waitingWithRequests ->
-            adapter.setRequests(waitingWithRequests.requests.map {
-                RequestWithUser(it, waitingWithRequests.user)
-            })
+        viewModel.waitingLiveData.observe(viewLifecycleOwner) { waiting ->
+            adapter.setRequests(waiting.requests)
         }
+    }
+
+    private fun validateConfirmButtonState() {
+        val areAllValuesEntered = adapter.getProposedValues().values.all { it.isNotBlank() }
+        binding.confirmButton.isEnabled = areAllValuesEntered
     }
 
     private fun showConfirmationDialog() {
@@ -78,7 +81,7 @@ class AdminConfirmationFragment : Fragment() {
             .setTitle("تایید نهایی")
             .setMessage("آیا از تایید اطلاعات وارد شده مطمئن هستید؟")
             .setPositiveButton("ادامه") { _, _ ->
-                viewModel.confirmRequests(waitingId)
+                viewModel.confirmRequestsAndCreateNotifications(waitingId, adapter.getProposedValues())
             }
             .setNegativeButton("انصراف", null)
             .show()

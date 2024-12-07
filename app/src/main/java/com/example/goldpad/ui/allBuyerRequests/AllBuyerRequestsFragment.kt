@@ -83,13 +83,15 @@ class AllBuyerRequestsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.requestsLiveData.observe(viewLifecycleOwner) { requestsWithUsers ->
-            adapter.setRequests(requestsWithUsers)
+            val activeRequests = requestsWithUsers.filter { it.request.isActive }
+            adapter.setRequests(activeRequests)
         }
 
         viewModel.selectedRequests.observe(viewLifecycleOwner) { selectedRequests ->
             adapter.setSelectedRequests(selectedRequests.toSet())
             binding.continueButton.isEnabled = selectedRequests.isNotEmpty()
         }
+
 
         viewModel.fetchBuyerRequests()
     }
