@@ -22,6 +22,7 @@ class AllBuyerRequestsViewModel @Inject constructor(
 
     val requestsLiveData = MutableLiveData<List<RequestWithUser>>() // Buyer requests
     val selectedRequests = MutableLiveData<MutableList<RequestWithUser>>(mutableListOf()) // Selected items
+    val saveOperationCompleted = MutableLiveData<Boolean>()
 
     fun fetchBuyerRequests() {
         viewModelScope.launch {
@@ -52,6 +53,7 @@ class AllBuyerRequestsViewModel @Inject constructor(
                 updatedRequests.addAll(selectedRequests.map { it.request })
                 waitingRepository.updateWaitingRequests(waitingId, updatedRequests)
             }
+            saveOperationCompleted.postValue(true)
         }
     }
 

@@ -51,11 +51,16 @@ class AllBuyerRequestsFragment : Fragment() {
             val selectedRequests = adapter.getSelectedRequests()
             if (selectedRequests.isNotEmpty()) {
                 viewModel.saveSelectedRequestsToWaiting(waitingId, selectedRequests)
-                val action = AllBuyerRequestsFragmentDirections
-                    .actionAllBuyerRequestsFragmentToAdminConfirmationFragment(waitingId)
-                findNavController().navigate(action)
+                viewModel.saveOperationCompleted.observe(viewLifecycleOwner) { isCompleted ->
+                    if (isCompleted) {
+                        val action = AllBuyerRequestsFragmentDirections
+                            .actionAllBuyerRequestsFragmentToAdminConfirmationFragment(waitingId)
+                        findNavController().navigate(action)
+                    }
+                }
             }
         }
+
 
         binding.cancelButton.setOnClickListener {
             Toast.makeText(requireContext(), waitingId.toString(), Toast.LENGTH_SHORT).show()

@@ -46,7 +46,6 @@ class AllSellerRequestsFragment : Fragment() {
             if (selectedRequests.isNotEmpty()) {
                 lifecycleScope.launch {
                     val waitingId = viewModel.saveSelectedRequestsToWaiting(Constants.USER_ID)
-                    Toast.makeText(requireContext(), waitingId.toString(), Toast.LENGTH_SHORT).show()
                     findNavController().navigate(
                         AllSellerRequestsFragmentDirections
                             .actionAllSellerRequestsFragmentToAllBuyerRequestsFragment(waitingId)
